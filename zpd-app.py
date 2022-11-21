@@ -1,4 +1,5 @@
 import os
+import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline
 
@@ -15,17 +16,22 @@ def savedif(path):
 
     return path
 
-#Šeit ievada tekstu
-prompt = 'dog'
 
-print(f"Characters in prompt: {len(prompt)}, limit 200")
+prompt = 'testing a cat' # Šeit ievada tekstu
 
-pipe = StableDiffusionPipeline.from_pretrained(SDV5_MODEL_PATH)
+print(f"Rakstzīmes ievadē: {len(prompt)}, ieteicamais limits 200")
+
+pipe = StableDiffusionPipeline.from_pretrained(SDV5_MODEL_PATH, revision="fp16", torch_dtype=torch.float16) # Float16 var noņemt ja hostam ir vairāk kā 10240MiB VRAM, šis variants izmanto +/- 6516MiB
+
 pipe = pipe.to('cuda')
 
 with autocast('cuda'):
     image = pipe(prompt).images[0]
 
-image_path = savedif(os.path(SAVE_PATH, (prompt[:25] + '...') if len(prompt) > 25 else prompt) + '.png')
+prompt_u = prompt.replace(' ' , '_')
+
+image_path = savedif(os.path.join(SAVE_PATH, (prompt_u[:25] + '...') if len(prompt_u) > 25 else prompt_u) + '.png')
 
 image.save(image_path)
+
+print('Attēls saglabāts: ' + image_path)
