@@ -17,7 +17,7 @@ def savedif(path):
     return path
 
 
-prompt = '' # Šeit ievada tekstu
+prompt = 'a cat on a moon' # Šeit ievada tekstu
 
 print(f"Rakstzīmes ievadē: {len(prompt)}, ieteicamais limits 200")
 
